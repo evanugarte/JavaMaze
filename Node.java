@@ -1,3 +1,5 @@
+
+
 import java.util.*;
 
 public class Node<E>
@@ -31,9 +33,7 @@ public class Node<E>
 	}
 
 	public boolean hasAllWalls() {
-		if(edges.get(1) != null && edges.get(2) != null && edges.get(3) != null && edges.get(4) != null)
-			return true;
-		return false;
+		return edges.isEmpty();
 	}
 	
 	public int getData()

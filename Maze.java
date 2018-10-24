@@ -35,7 +35,7 @@ public class Maze<E>{
 		System.out.println("+");
     }
     
-    public boolean addEdge(int x1, int y1, int x2, int y2) {
+    public boolean addEdge(int y1, int x1, int y2, int x2) {
     	int key = 0;
     	//get both nodes from 2D array
     	if(x2 == x1 + 1 && y2 == y1) {
@@ -50,13 +50,13 @@ public class Maze<E>{
 		}else if(y2 == y1 - 1 && x2 == x1) {
 			//Below (south), key value of 2
 			key = 2;
-		}else {
+		}else{
 			//Coordinates are invalid
 			return false;
 		}
     	
     	//node1.addEdge(node2);
-    	return nodeGraph[x1][y1].addEdge(nodeGraph[x2][y2], key);
+    	return (nodeGraph[y1][x1].addEdge(nodeGraph[x2][y2], key) && nodeGraph[x2][y2].addEdge(nodeGraph[x1][y1], key));
     }
     
     
@@ -69,9 +69,9 @@ public class Maze<E>{
     	//withWallIntact = node.getAllNeighbors
     	ArrayList<Node<E>> neighbors = this.getAllNeighbors(currentCell);
     	System.out.println();
-    	for(Node<E> n : neighbors) {
-    		if(!n.hasAllWalls())
-    			neighbors.remove(n);
+    	for(int i = 0; i < neighbors.size(); i++) {
+    		if(!neighbors.get(i).hasAllWalls())
+    			neighbors.remove(neighbors.get(i));
     	}
     	
     	for(Node<E> n : neighbors) {
@@ -92,7 +92,7 @@ public class Maze<E>{
     		//}
     		
     		
-    		nodeGraph[(currentCell.getXCor() + 1)][currentCell.getYCor()].getData();
+    		//nodeGraph[(currentCell.getXCor() + 1)][currentCell.getYCor()].getData();
     }
     
     private ArrayList<Node<E>> getAllNeighbors(Node<E> currNode){
