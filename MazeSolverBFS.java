@@ -194,6 +194,83 @@ public class MazeSolverBFS<E> {
 		String space = " "; // one space
 		String tab = "	"; // a smaller space, named as tab
 
+		// =================================
+		// BEGIN PRINTING WITH STEPS TO FILE
+		// =================================
+
+		out.println("BFS SOLUTION WITH STEPS:");
+		// Print the top left corner of the Maze with an entry point
+		out.print("+");
+		// print a gap of the entry point
+		out.print(" ");
+		// out.print(tab);
+		// System.out.print(tab);
+
+		// Print the top line of the maze with + and - as the border
+		for (int i = 1; i < size; i++) {
+			out.print("+");
+			out.print("-");
+		}
+		// Print the top right corner of the Maze
+		out.print("+");
+		out.println();
+
+		// This loop prints each row, with a gap in the maze or a # if the node is in
+		// the path
+		for (int j = 1; j <= size; j++) {
+			// Print border of left maze
+			out.print("|");
+			for (int k = 1; k <= size; k++) {
+				// Print a gap from the border to the node's contents
+				// out.print(space);
+
+				// Middle char
+				if (nodeGraph[j][k].getSteps() != -1) {
+					out.print(nodeGraph[j][k].getSteps() % 10);
+				} else {
+					out.print(" ");
+				}
+				// out.print(space);
+
+				if (nodeGraph[j][k].hasEastEdges()) {
+					out.print(" ");
+
+				} else {
+					out.print("|");
+				}
+
+			}
+			// Print a new line for the next row
+			out.println();
+			// print left edge of the row with a +
+			out.print("+");
+			for (int p = 1; p <= size; p++) {
+
+				// out.print(space);
+				if (nodeGraph[j][p].hasSouthEdges()) {
+					// if the node has an edge from north to south, print a #
+					out.print(" ");
+
+				} else if (j == size && p == size) {
+					// if this is the bottom right node then print a space
+					out.print(" ");
+				} else {
+					// print a horizontal wall if no connection
+					out.print("-");
+				}
+				// print left edge of row
+				// out.print(space);
+				out.print("+");
+			}
+			out.println();
+
+		}
+		out.println();
+
+		// =================================
+		// BEGIN PRINTING WITH # TO FILE
+		// =================================
+
 		out.println("BFS SOLUTION WITH #:");
 		// Print the top left corner of the Maze with an entry point
 		out.print("+");
@@ -204,7 +281,7 @@ public class MazeSolverBFS<E> {
 		for (int i = 1; i < size; i++) {
 			out.print("+");
 			out.print("-");
-			
+
 		}
 		// Print the top right corner of the Maze
 		out.print("+");
@@ -267,80 +344,6 @@ public class MazeSolverBFS<E> {
 			}
 			out.println();
 		}
-		out.println();
-
-		// =================================
-		// BEGIN PRINTING WITH STEPS TO FILE
-		// =================================
-
-		out.println("BFS SOLUTION WITH STEPS:");
-		// Print the top left corner of the Maze with an entry point
-		out.print("+");
-		// print a gap of the entry point
-		out.print(space + tab);
-		// System.out.print(tab);
-
-		// Print the top line of the maze with + and - as the border
-		for (int i = 1; i < size; i++) {
-			out.print("+");
-			out.print(space + "-");
-			out.print(tab);
-		}
-		// Print the top right corner of the Maze
-		out.print("+");
-		out.println();
-
-		// This loop prints each row, with a gap in the maze or a # if the node is in
-		// the path
-		for (int j = 1; j <= size; j++) {
-			// Print border of left maze
-			out.print("|");
-			for (int k = 1; k <= size; k++) {
-				// Print a gap from the border to the node's contents
-				out.print(space);
-
-				// Middle char
-				if (nodeGraph[j][k].getSteps() != -1) {
-					out.print(nodeGraph[j][k].getSteps() % 10);
-				} else {
-					out.print(" ");
-				}
-				out.print(space);
-
-				if (nodeGraph[j][k].hasEastEdges()) {
-					out.print(" ");
-
-				} else {
-					out.print("|");
-				}
-
-			}
-			// Print a new line for the next row
-			out.println();
-			// print left edge of the row with a +
-			out.print("+");
-			for (int p = 1; p <= size; p++) {
-
-				out.print(space);
-				if (nodeGraph[j][p].hasSouthEdges()) {
-					// if the node has an edge from north to south, print a #
-					out.print(" ");
-
-				} else if (j == size && p == size) {
-					// if this is the bottom right node then print a space
-					out.print(" ");
-				} else {
-					// print a horizontal wall if no connection
-					out.print("-");
-				}
-				// print left edge of row
-				out.print(space);
-				out.print("+");
-			}
-			out.println();
-
-		}
-
 		out.println();
 		out.println();
 		out.close();

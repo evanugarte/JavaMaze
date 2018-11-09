@@ -216,4 +216,28 @@ class MazeSolverTest {
 		assertEquals(4, testList.get(1).getData());
 	}
 
+	/**
+	 * Compare output file with the test file
+	 * @throws FileNotFoundException
+	 * @throws IOException
+	 */
+	@Test
+	void fileOutPutTest() throws FileNotFoundException, IOException {
+
+		String testFile = "testFile.txt"; // Real file path
+
+		BufferedReader Out = new BufferedReader(new FileReader("file.txt")); // My compute file
+
+		BufferedReader In = new BufferedReader(new FileReader("/Users/yulongran/eclipse-Project2/Project2_Maze/src/RanYulongUgarteEvanProject2_Maze/testFile")); // Test File
+
+		String expectedLine = "";
+
+		while ((expectedLine = In.readLine()) != null) {
+			String actualLine = Out.readLine();
+			assertEquals(expectedLine, actualLine);
+		}
+
+		In.close();
+		Out.close();
+	}
 }
