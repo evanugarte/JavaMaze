@@ -161,14 +161,14 @@ public class Maze<E> {
 
 		// Independently print the beginning cell of the Maze
 		System.out.print("+");
-		// System.out.print(" ");
-		System.out.print(space);
+		System.out.print(" ");
+		//System.out.print(space);
 
 		// For every cell, except the first beginning, print a "+ - "
 		for (int i = 1; i < size; i++) {
 			System.out.print("+");
-			System.out.print(space + "-");
-			System.out.print(tabe);
+			System.out.print("-");
+			//System.out.print(tabe);
 		}
 
 		// Print the end "+" for first line
