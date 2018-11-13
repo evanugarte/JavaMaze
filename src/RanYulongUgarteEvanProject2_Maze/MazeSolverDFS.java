@@ -1,65 +1,59 @@
 package RanYulongUgarteEvanProject2_Maze;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.Queue;
+import java.util.Stack;
 
-/**
- * Solve Maze by BFS
- * 
- * @author Yulong and Evan
- *
- * @param <E>
- */
-public class MazeSolverBFS<E> {
+public class MazeSolverDFS<E> {
+	// MazeSolverDFS Instance Variables
+
 	// 2D array of cells
 	private Node<E>[][] nodeGraph;
 
 	// Size of the Maze
 	private int size;
 
-	/**
-	 * Construct a MazeSolver
-	 * 
-	 * @param nodeGraph
-	 *            2D array of nodes structure is Maze
-	 * @param size
-	 *            dimension of the Maze
-	 */
-	public MazeSolverBFS(Node<E>[][] nodeGraph, int size) {
+	// This constructor takes in a 2D array of nodes, and the dimensions of the
+	// array
+	public MazeSolverDFS(Node<E>[][] nodeGraph, int size) {
 		this.nodeGraph = nodeGraph;
 		this.size = size;
 
 	}
 
+	// This method returns a node at a specific coordinate in the graph
+	public Node<E> getNodeAt(int xCor, int yCor) {
+		// ensure that the coordinate parameters are positive and in bounds
+		if (xCor <= size && xCor <= size && xCor > 0 && yCor > 0) {
+			return nodeGraph[xCor][yCor];
+		}
+		return null;
+	}
+
 	/**
-	 * Solve Maze by BFS
+	 * Solve Maze by DFS
 	 * 
 	 */
-	public void SolveMazeBFS() {
+	public void SolveMazeDFS() {
 
-		// Starting node always set to first cell
-		Node<E> starting = nodeGraph[1][1];
-
-		// Beginning cell has no parent
+		// To start DFS, we set our starting node to be the
+		// node at the top left corner
+		Node<E> starting = getNodeAt(1, 1);
+		// This node doesn't have any parents, so we set it to null.
 		starting.setParent(null);
+		// This stack will hold all the nodes that we visit with DFS
+		Stack<Node<E>> nodes = new Stack<Node<E>>();
+		// Push our starting node to the stack
+		nodes.push(starting);
 
-		// Empty Queue for DFS
-		Queue<Node<E>> q = new LinkedList<Node<E>>();
+		// Set the bottom left cell to be the path of solution
+		getNodeAt(size, size).setIsPath();
 
-		// Add first cell to the Queue
-		q.add(starting);
-
-		// Set last cell be the path of solution
-		nodeGraph[size][size].setIsPath();
-
-		// Reach the last cell or exit of the maze
+		// This boolean variable will turn true if we reach the last cell
 		boolean findLast = false;
 
 		// Solution Steps
@@ -68,126 +62,100 @@ public class MazeSolverBFS<E> {
 		// Initialize the starting node as step 0
 		starting.setSteps(steps);
 
-		// DFS Looping when Queue is not empty and not yet find the exist cell
-		while (!q.isEmpty() && !findLast) {
+		// This loop will iterate until we find the final node or empty the stack
+		while (!nodes.isEmpty() && !findLast) {
+			// Pop the top node off the stack
+			Node<E> currNode = nodes.pop();
 
-			// Pop one cell from the Queue and set to U
-			Node<E> u = q.poll();
+			// Get all the neighbors of the popped node
+			ArrayList<Node<E>> neighbors = getEdges(currNode);
 
-			// For every neighbors of cell u
-			for (int i = 0; i < getEdges(u).size(); i++) {
-				// Get one neighbors of u and assign it to the Node v
-				Node<E> v = getEdges(u).get(i);
-				if (!findLast) {
+			// This loop iterates through all the neighbors of the popped node
+			for (int i = 0; i < neighbors.size(); i++) {
+				Node<E> popNeighbor = neighbors.get(i);
 
-					// If this cell have not visited
-					if (v.getColor().equals("WHITE")) {
-
-						// Change color to Grey
-						v.setColor("GREY");
-
-						// Increment steps
-						steps++;
-
-						// Set parent of v to u
-						v.setParent(u);
-
-						// Set steps
-						v.setSteps(steps);
-
-						/// Add v to the Queue
-						q.add(v);
-					}
-
+				// If the node is white, we set it to gray and it's parent to the popped node
+				if (popNeighbor.getColor().equals("WHITE")) {
+					popNeighbor.setColor("GREY");
+					popNeighbor.setParent(currNode);
+					// Only add the node to the stack if it wasn't visited (white)
+					nodes.push(popNeighbor);
 				}
-				// If reach the exist cell, terminate the DFS
-				if (v.getXCor() == size && v.getYCor() == size) {
+
+				// If the node we popped at the top of the while loop had the coordinates of the
+				// last neighbor, then we know we found the last one, and set findLast to true
+				if (currNode.getXCor() == size && currNode.getYCor() == size) {
 					findLast = true;
 				}
-
 			}
-
-			// Set u to color black; U have full explored
-			u.setColor("BLACK");
+			// Set the popped node's steps to the current steps
+			currNode.setSteps(steps);
+			// Increment steps
+			steps++;
+			// Set the popped node's color to black, since all its neighbors were visited
+			currNode.setColor("BLACK");
 
 		}
 
-		// Reaches the beginning cell
+		// This boolean value will let us know if we are done with specifying the
+		// solution path
 		boolean end = false;
 
-		// Starting from the exist cell
-		Node<E> traverse = nodeGraph[size][size];
+		// Get the cell at the end of the maze, since we will now get the solution path
+		Node<E> currNode = getNodeAt(size, size);
 
-		// Traverse from the exit cell, finding its parent and set them as solution path
+		// Starting from the exit cell, find the cell's parent and set the parent as the
+		// solution path
 		while (!end) {
-
-			// Set the parent of the traverse cell to IsPath
-			traverse.getParent().setIsPath();
-
-			// If not reach the beginning cell
-			if (!(traverse.getParent().getXCor() == 1 && traverse.getParent().getYCor() == 1)) {
-				// If the parent of the current cell is null
-				if (traverse.getParent() == null) {
-
-					// Reach the beginning cell
+			// Set currentNode the path
+			currNode.getParent().setIsPath();
+			// Get the current node's parent, as long as the x and y coordinates aren't that
+			// of the
+			// top right (entry) node in the maze
+			if (!(currNode.getParent().getXCor() == 1 && currNode.getParent().getYCor() == 1)) {
+				// The entry node's parent is the only node who's parent is null.
+				// By reaching it we are done, and thus set end to true
+				if (currNode.getParent() == null) {
 					end = true;
 				} else {
-
-					// Change the traverse cell to its parent and continue traversing
-					traverse = traverse.getParent();
+					currNode = currNode.getParent();
 				}
-			}
-			// Reach the beginning cell
-			else {
-
-				// Terminate the loop
+			} else {
 				end = true;
 			}
 		}
 
 	}
 
-	/**
-	 * Get all neighbors that have all walls up or get Node that have edges connect
-	 * to n
-	 * 
-	 * @param n
-	 *            A cell of the Maze
-	 * @return An array list contains neighbors that have edges connect to the cell
-	 */
+	// Get all the neighbors that a Node has, based on the edges it has connect
 	public ArrayList<Node<E>> getEdges(Node<E> n) {
-
-		// Array list contains all neighbors connect by an edges
-		ArrayList<Node<E>> l = new ArrayList<Node<E>>();
-
-		// Hash map contains all neighbors connect by an edges
+		ArrayList<Node<E>> neighbors = new ArrayList<Node<E>>();
+		// The edges of a node are stored in a hashmap, with a number corresponding to
+		// North, South, East, West as the key
 		HashMap<Integer, Node<E>> edges = n.getEdges();
 
-		// If the hash map contains a South edges, add it to the array list
-		if (edges.containsKey(2)) {
-			l.add(edges.get(2));
-		}
+		// If a node at a specific key exists, we add it to the array list and return it
+		// North = 1, South = 2, East = 3, West = 4
 
-		// If the hash map contains a East edges, add it to the array list
-		if (edges.containsKey(3)) {
-			l.add(edges.get(3));
-
-			// If the hash map contains a North edges, add it to the array list
-		}
 		if (edges.containsKey(1)) {
-			l.add(edges.get(1));
+			neighbors.add(edges.get(1));
 		}
-
-		// If the hash map contains a West edges, add it to the array list
+		if (edges.containsKey(2)) {
+			neighbors.add(edges.get(2));
+		}
 		if (edges.containsKey(4)) {
-			l.add(edges.get(4));
+			neighbors.add(edges.get(4));
+		}
+		if (edges.containsKey(3)) {
+			neighbors.add(edges.get(3));
 		}
 
-		return l;
+		return neighbors;
 	}
 
 	// Print Solution of the Maze with the path represented as #
 	public void printSolutionToFile(String filename) throws IOException {
+
 		File test = new File(filename);
 
 		PrintWriter out = new PrintWriter(new FileWriter(filename, true));
@@ -198,18 +166,18 @@ public class MazeSolverBFS<E> {
 		// BEGIN PRINTING WITH STEPS TO FILE
 		// =================================
 
-		out.println("BFS SOLUTION WITH STEPS:");
+		out.println("DFS SOLUTION WITH STEPS:");
 		// Print the top left corner of the Maze with an entry point
 		out.print("+");
 		// print a gap of the entry point
-		out.print(" ");
-		// out.print(tab);
+		out.print(space);
 		// System.out.print(tab);
 
 		// Print the top line of the maze with + and - as the border
 		for (int i = 1; i < size; i++) {
 			out.print("+");
 			out.print("-");
+			//out.print(tab);
 		}
 		// Print the top right corner of the Maze
 		out.print("+");
@@ -222,17 +190,17 @@ public class MazeSolverBFS<E> {
 			out.print("|");
 			for (int k = 1; k <= size; k++) {
 				// Print a gap from the border to the node's contents
-				// out.print(space);
+				//out.print(space);
 
 				// Middle char
-				if (nodeGraph[j][k].getSteps() != -1) {
-					out.print(nodeGraph[j][k].getSteps() % 10);
+				if (getNodeAt(j, k).getSteps() != -1 && getNodeAt(j, k).isPath()) {
+					out.print(getNodeAt(j, k).getSteps() % 10);
 				} else {
 					out.print(" ");
 				}
-				// out.print(space);
+				//out.print(space);
 
-				if (nodeGraph[j][k].hasEastEdges()) {
+				if (getNodeAt(j, k).hasEastEdges()) {
 					out.print(" ");
 
 				} else {
@@ -246,8 +214,8 @@ public class MazeSolverBFS<E> {
 			out.print("+");
 			for (int p = 1; p <= size; p++) {
 
-				// out.print(space);
-				if (nodeGraph[j][p].hasSouthEdges()) {
+				//out.print(space);
+				if (getNodeAt(j, p).hasSouthEdges()) {
 					// if the node has an edge from north to south, print a #
 					out.print(" ");
 
@@ -259,19 +227,19 @@ public class MazeSolverBFS<E> {
 					out.print("-");
 				}
 				// print left edge of row
-				// out.print(space);
+				//out.print(space);
 				out.print("+");
 			}
 			out.println();
-
 		}
+
 		out.println();
 
 		// =================================
 		// BEGIN PRINTING WITH # TO FILE
 		// =================================
 
-		out.println("BFS SOLUTION WITH #:");
+		out.println("DFS SOLUTION WITH #:");
 		// Print the top left corner of the Maze with an entry point
 		out.print("+");
 		// print a gap of the entry point
@@ -281,7 +249,7 @@ public class MazeSolverBFS<E> {
 		for (int i = 1; i < size; i++) {
 			out.print("+");
 			out.print("-");
-
+			// out.print(tab);
 		}
 		// Print the top right corner of the Maze
 		out.print("+");
@@ -297,7 +265,7 @@ public class MazeSolverBFS<E> {
 				// out.print(space);
 
 				// If the node is in the path print a # or an empty area
-				if (nodeGraph[j][k].isPath()) {
+				if (getNodeAt(j, k).isPath()) {
 					out.print("#");
 				} else {
 					out.print(" ");
@@ -306,8 +274,8 @@ public class MazeSolverBFS<E> {
 
 				// If there is an edge between nodes in a horizontal row, print #
 				// else print a wall since there is no connection
-				if (nodeGraph[j][k].hasEastEdges()) {
-					if (nodeGraph[j][k].isPath()) {
+				if (getNodeAt(j, k).hasEastEdges()) {
+					if (getNodeAt(j, k).isPath()) {
 						out.print("#");
 					} else {
 						out.print(space);
@@ -324,9 +292,9 @@ public class MazeSolverBFS<E> {
 			for (int p = 1; p <= size; p++) {
 
 				// out.print(space);
-				if (nodeGraph[j][p].hasSouthEdges()) {
+				if (getNodeAt(j, p).hasSouthEdges()) {
 					// if the node has an edge from north to south, print a #
-					if (nodeGraph[j][p].isPath())
+					if (getNodeAt(j, p).isPath())
 						out.print("#");
 					else
 						out.print(space);
