@@ -1,4 +1,4 @@
-package RanYulongUgarteEvanProject2_Maze;
+package sjsu.ran.ugarte.cs146.project2;
 
 import java.io.File;
 import java.io.FileNotFoundException;

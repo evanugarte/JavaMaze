@@ -1,4 +1,4 @@
-package RanYulongUgarteEvanProject2_Maze;
+package sjsu.ran.ugarte.cs146.project2;
 
 import static org.junit.jupiter.api.Assertions.*;
 import java.io.*;

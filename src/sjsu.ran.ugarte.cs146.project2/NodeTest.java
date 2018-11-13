@@ -1,5 +1,4 @@
-package RanYulongUgarteEvanProject2_Maze;
-
+package sjsu.ran.ugarte.cs146.project2;
 import org.junit.*;
 import static org.junit.Assert.*;
 

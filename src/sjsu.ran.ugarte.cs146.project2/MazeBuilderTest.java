@@ -1,48 +1,7 @@
-package RanYulongUgarteEvanProject2_Maze;
+package sjsu.ran.ugarte.cs146.project2;
 
 import static org.junit.jupiter.api.Assertions.*;
-//
-///**
-// * Maze program runner
-// * @author yulongran
-// *
-// */
-//public class MazeTest{
-//    public static void main(String[] args){
-//        Maze<Integer> maze = new Maze<Integer>(5);
-//        MazeSolverBFS BFS = new MazeSolverBFS(maze.getNodeGraph(), maze.size);
-//       
-//      //  maze.print();
-//        maze.DFS();
-//        
-//        System.out.println("Maze :" );
-//        System.out.println();
-//        maze.printMaze();
-//        
-//        //Solve the Maze with DFS
-//        BFS.SolveMazeBFS();
-//        
-//        System.out.println();
-//        System.out.println();
-//        System.out.println();
-//        System.out.println("BFS Solution: ");
-//        System.out.println();
-//        BFS.printSolution();
-//        
-//        System.out.println();
-//        System.out.println();
-//        System.out.println();
-//        System.out.println("BFS Solution with Steps: ");
-//        System.out.println();
-//        BFS.printSolutionWithSteps();
-//     
-//    }
-//    
-//}
-//
-
 import java.util.ArrayList;
-
 import org.junit.jupiter.api.Test;
 
 /**
