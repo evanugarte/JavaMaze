@@ -1,5 +1,9 @@
 package RanYulongUgarteEvanProject2_Maze;
 
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -21,6 +25,8 @@ public class Maze<E> {
 	int nodeCount; // Count the number of Node in 2D array
 	int size; // Input Size of the Maze
 	private Random myRandGen; // Random Generator
+	// Count number of visited cells
+	int visitedCells = 1;
 
 	/**
 	 * Initialize the Maze: Construct size*size number of cells
@@ -94,9 +100,6 @@ public class Maze<E> {
 		// Initialize the starting cell
 		Node<E> currentCell = nodeGraph[1][1];
 
-		// Count number of visited cells
-		int visitedCells = 1;
-
 		// Looping until visit every cell
 		while (visitedCells < nodeCount) {
 
@@ -157,14 +160,14 @@ public class Maze<E> {
 
 		// Independently print the beginning cell of the Maze
 		System.out.print("+");
-		System.out.print(space + " ");
-		System.out.print(tabe);
+		System.out.print(" ");
+		//System.out.print(space);
 
 		// For every cell, except the first beginning, print a "+ - "
 		for (int i = 1; i < size; i++) {
 			System.out.print("+");
-			System.out.print(space + "-");
-			System.out.print(tabe);
+			System.out.print("-");
+			//System.out.print(tabe);
 		}
 
 		// Print the end "+" for first line
@@ -183,12 +186,12 @@ public class Maze<E> {
 			for (int k = 1; k <= size; k++) {
 
 				// Print one space
-				System.out.print(space);
+				// System.out.print(space);
 
 				System.out.print(" ");
 
 				// Space indent
-				System.out.print(space);
+				// System.out.print(space);
 
 				// If the cell has a east edges, leave an opening for the east neighboring
 				if (nodeGraph[j][k].hasEastEdges()) {
@@ -213,7 +216,7 @@ public class Maze<E> {
 			for (int p = 1; p <= size; p++) {
 
 				// Print a space
-				System.out.print(space);
+				// System.out.print(space);
 
 				// If the cell contains south Edges
 				if (nodeGraph[j][p].hasSouthEdges()) {
@@ -234,11 +237,112 @@ public class Maze<E> {
 				}
 
 				// Print the end " +"
-				System.out.print(space);
+				// System.out.print(space);
 				System.out.print("+");
 			}
 			System.out.println();
 		}
+
+	}
+
+	/**
+	 * Output a Perfect Maze to the file
+	 * 
+	 * @throws IOException
+	 */
+	public void outPutMazeToFile(String filename) throws IOException {
+
+		File test = new File(filename);
+
+		PrintWriter out = new PrintWriter(new FileWriter(filename, true));
+		String space = "   "; // one space
+
+		// One tab
+		String tabe = "	";
+
+		out.println("Graph Size: " + size);
+		out.println("MAZE:");
+
+		// Independently print the beginning cell of the Maze
+		out.print("+");
+		out.print(" ");
+
+		// For every cell, except the first beginning, print a "+ - "
+		for (int i = 1; i < size; i++) {
+			out.print("+");
+			out.print("-");
+		}
+
+		// Print the end "+" for first line
+		out.print("+");
+
+		// Start a new line
+		out.println();
+
+		// For every horizontal cell
+		for (int j = 1; j <= size; j++) {
+
+			// Each row each with "|"
+			out.print("|");
+
+			// For every horizontal cell
+			for (int k = 1; k <= size; k++) {
+
+				// Print one space
+				// out.print(space);
+
+				out.print(" ");
+
+				// If the cell has a east edges, leave an opening for the east neighboring
+				if (nodeGraph[j][k].hasEastEdges()) {
+					out.print(" ");
+
+				}
+
+				// If the cell has no east edges, print a wall "|"
+				else {
+					out.print("|");
+				}
+
+			}
+
+			// Start with new line
+			out.println();
+
+			// Start with the new Line with star
+			out.print("+");
+
+			// For every horizontal edges looks like "+ - +"
+			for (int p = 1; p <= size; p++) {
+
+				// If the cell contains south Edges
+				if (nodeGraph[j][p].hasSouthEdges()) {
+
+					// Print empty space or no walls
+					out.print(" ");
+
+				}
+
+				// If the cell is exist cell, print empty space too
+				else if (j == size && p == size) {
+					out.print(" ");
+				}
+
+				// If the cell contains no south neighbors and not last cell, print wall
+				else {
+					out.print("-");
+				}
+
+				// Print the end " +"
+			//	out.print(space);
+				out.print("+");
+			}
+			out.println();
+		}
+
+		out.println();
+		out.println();
+		out.close();
 
 	}
 
@@ -294,7 +398,7 @@ public class Maze<E> {
 	 *            input Node
 	 * @return neighbors arrayList of neighbors
 	 */
-	private ArrayList<Node<E>> getAllNeighbors(Node<E> currNode) {
+	public ArrayList<Node<E>> getAllNeighbors(Node<E> currNode) {
 
 		// ArrayList of neighbors or node have edges connect with currNode
 		ArrayList<Node<E>> neighbors = new ArrayList<Node<E>>();
